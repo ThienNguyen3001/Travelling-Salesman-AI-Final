@@ -1,7 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 from GA import genetic_algorithm
-import tkinter
+
 def main():
     distances = [
         [0, 85, 26, 81],
@@ -10,7 +10,7 @@ def main():
         [81, 97, 26, 0]
     ]
     n_cities = len(distances)
-    solution = genetic_algorithm(n_cities, distances, population_size=500, generations=10, mutation_rate=0.1)
+    solution = genetic_algorithm(n_cities, distances, population_size=10, generations=10, mutation_rate=0.1)
     
     # Print the route and distance
     print(f"Best route: {solution['route']}")
@@ -33,15 +33,6 @@ def main():
     route_edges = [(solution['route'][i], solution['route'][i + 1]) for i in range(len(solution['route']) - 1)]
     nx.draw_networkx_edges(G, pos, edgelist=route_edges, edge_color='r', width=2)
 
-    # Add title to the plot
-    root = tkinter.Tk()
-    root.title("Best Route and Distance")
-    label = tkinter.Label(root, text=f"Best route: {solution['route']}\nShortest distance: {solution['distance']}")
-    label.pack()
     plt.show()
-    root.mainloop()
-    
-    
-
 if __name__ == "__main__":
     main()
