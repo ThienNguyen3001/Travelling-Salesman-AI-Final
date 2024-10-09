@@ -79,7 +79,7 @@ def genetic_algorithm(n_cities, distances, population_size=100, generations=100,
         if route_distance < best_distance:
             best_route = route
             best_distance = route_distance
-    
+    best_route = best_route + [0] 
     # Return the best solution
     solution = {
         'route': best_route,
