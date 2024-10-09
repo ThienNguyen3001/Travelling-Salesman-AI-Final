@@ -22,7 +22,7 @@ def crossover(parent1, parent2):
 
     return child1, child2
 def crossover(parent1, parent2):
-    # Ensure that the starting city (0) remains fixed
+    
     split_index = random.randint(1, len(parent1) - 2)
     child1_part1 = parent1[1:split_index]
     child1_part2 = [city for city in parent2 if city not in child1_part1 and city != 0]
@@ -35,9 +35,10 @@ def crossover(parent1, parent2):
     return child1, child2
 
 def mutate(route, mutation_rate):
-    for i in range(len(route)):
+    # Ensure that city 0 stays fixed at the start
+    for i in range(1, len(route)):  # Start at index 1, skip city 0
         if random.uniform(0, 1) < mutation_rate:
-            j = random.randint(0, len(route) - 1)
+            j = random.randint(1, len(route) - 1)  # Swap within non-starting cities
             route[i], route[j] = route[j], route[i]  # Swap mutation
     return route
 
