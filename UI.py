@@ -10,7 +10,7 @@ def main():
         [81, 97, 26, 0]
     ]
     n_cities = len(distances)
-    solution = genetic_algorithm(n_cities, distances, population_size=10, generations=10, mutation_rate=0.1)
+    solution = genetic_algorithm(n_cities, distances, population_size=100, generations=10, mutation_rate=0.1)
     
     # Print the route and distance
     print(f"Best route: {solution['route']}")
