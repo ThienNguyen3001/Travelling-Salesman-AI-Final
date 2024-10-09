@@ -46,7 +46,7 @@ def fitness(population, distances):
     return [compute_route_distance(route, distances) for route in population]
 
 def genetic_algorithm(n_cities, distances, population_size=100, generations=100, mutation_rate=0.1):
-    # Create initial population
+    # Create initial population 
     population = [generate_random_route(n_cities) for _ in range(population_size)]
 
     for generation in range(generations):
