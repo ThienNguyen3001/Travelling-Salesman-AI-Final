@@ -21,18 +21,6 @@ def crossover(parent1, parent2):
     child2 = child2_part1 + child2_part2
 
     return child1, child2
-def crossover(parent1, parent2):
-    
-    split_index = random.randint(1, len(parent1) - 2)
-    child1_part1 = parent1[1:split_index]
-    child1_part2 = [city for city in parent2 if city not in child1_part1 and city != 0]
-    child1 = [0] + child1_part1 + child1_part2
-
-    child2_part1 = parent2[1:split_index]
-    child2_part2 = [city for city in parent1 if city not in child2_part1 and city != 0]
-    child2 = [0] + child2_part1 + child2_part2
-
-    return child1, child2
 
 def mutate(route, mutation_rate):
     # Ensure that city 0 stays fixed at the start
