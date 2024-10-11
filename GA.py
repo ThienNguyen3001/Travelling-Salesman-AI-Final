@@ -1,5 +1,5 @@
-from TSP import generate_random_route, compute_route_distance
 import random
+from TSP import generate_random_route, compute_route_distance
 
 def selection(population, fitness_scores):
     selected_routes = []
@@ -7,7 +7,7 @@ def selection(population, fitness_scores):
     for i in range(population_size // 2):
         max_fitness_index = fitness_scores.index(min(fitness_scores))  # Minimize distance
         selected_routes.append(population[max_fitness_index])
-        fitness_scores[max_fitness_index] = float('inf')  # Mark as selected
+        fitness_scores[max_fitness_index] = 0  # Mark as selected
     return selected_routes
 
 def crossover(parent1, parent2):
@@ -31,14 +31,17 @@ def mutate(route, mutation_rate):
     return route
 
 def fitness(population, distances):
-    return [compute_route_distance(route, distances) for route in population]
+    fitness_scores = []
+    for route in population:
+        distance = compute_route_distance(route, distances)
+        fitness_scores.append(distance)
+    return fitness_scores
 
 def genetic_algorithm(n_cities, distances, population_size=100, generations=100, mutation_rate=0.1):
     # Create initial population 
     population = [generate_random_route(n_cities) for _ in range(population_size)]
 
     for generation in range(generations):
-        # Calculate fitness of each route (minimize distance)
         fitness_scores = fitness(population, distances)
 
         # Select the best routes for reproduction
@@ -71,6 +74,7 @@ def genetic_algorithm(n_cities, distances, population_size=100, generations=100,
     # Return the best solution
     solution = {
         'route': best_route,
-        'distance': best_distance
+        'distance': best_distance,
+        'fitness': fitness_scores
     }
     return solution
