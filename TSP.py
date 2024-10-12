@@ -1,6 +1,6 @@
 #TSP.py
 import random
-
+random.seed(42)
 def generate_random_route(n_cities):
     route = list(range(1, n_cities))  
     random.shuffle(route)
