@@ -2,16 +2,17 @@
 ### Selection: 
 * Roulette wheel selection
 * Tournament Selection
-* <del> Rank Selection </del>
+* Rank Selection 
 * Elitism Selection (đã làm)
 ### Crossover
-* <del>Single-Point Crossover</del>
+* Single-Point Crossover
 * Two-Point Crossover
 * Uniform crossover 
 * Order Crossover (đã làm)
 ### Mutation
 * Scramble Mutation
 * Inversion Mutation
+* Insertion mutation
 * Swap Mutation (đã làm)
 ### Làm vào file GA.py như mẫu
 
