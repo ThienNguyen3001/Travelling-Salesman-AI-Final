@@ -1,11 +1,7 @@
 import random
 from TSP import generate_random_route, compute_route_distance
 
-def selection(population, fitness_scores, algorithm = 'elitism'):
-    if algorithm == 'elitism':
-        return elitism_selection(population, fitness_scores)
-    
-def elitism_selection(population, fitness_scores):
+def selection(population, fitness_scores):
     selected_routes = []
     population_size = len(population)
     for i in range(population_size // 2):
@@ -14,11 +10,7 @@ def elitism_selection(population, fitness_scores):
         fitness_scores[max_fitness_index] = 0  # Mark as selected
     return selected_routes
 
-def crossover(parent1, parent2, algorithm='order'):
-    if algorithm == 'order':
-        return order_crossover(parent1, parent2)
-
-def order_crossover(parent1, parent2):
+def crossover(parent1, parent2):
     split_index = random.randint(1, len(parent1) - 2)
     child1_part1 = parent1[:split_index]
     child1_part2 = [city for city in parent2 if city not in child1_part1]
@@ -30,15 +22,13 @@ def order_crossover(parent1, parent2):
 
     return child1, child2
 
-def mutate(route, mutation_rate, algorithm='swap'):
-    if algorithm == 'swap':
-        return swap_mutation(route, mutation_rate)
-    
-def swap_mutation(route, mutation_rate):
-    for i in range(1, len(route)):  
+def mutate(route, mutation_rate):
+    # Ensure that city 0 stays fixed at the start
+    for i in range(1, len(route)):  # Start at index 1, skip city 0
         if random.uniform(0, 1) < mutation_rate:
-            j = random.randint(1, len(route) - 1)  
-            route[i], route[j] = route[j], route[i]
+            j = random.randint(1, len(route) - 1)  # Swap within non-starting cities
+            route[i], route[j] = route[j], route[i]  # Swap mutation
+    return route
 
 def fitness(population, distances):
     fitness_scores = []
