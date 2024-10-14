@@ -51,7 +51,7 @@ def mutate(route, mutation_rate, algorithm='swap'):
 def fitness(population, distances):
     fitness_scores = []
     for route in population:
-        distance = compute_route_distance(route, distances)
+        distance = compute_route_distance(route + [route[0]], distances)
         fitness_scores.append(distance)
     return fitness_scores
 
@@ -69,8 +69,7 @@ def genetic_algorithm(n_cities, distances, population_size=100, generations=100,
         # Crossover to create offspring
         offspring = []
         for i in range(population_size // 2):
-            parent1 = selected_routes[random.randint(0, len(selected_routes) - 1)]
-            parent2 = selected_routes[random.randint(0, len(selected_routes) - 1)]
+            parent1, parent2 = random.sample(selected_routes, 2)
             child1, child2 = crossover(parent1, parent2, crossover_algorithm)
             offspring.extend([child1, child2])
 
