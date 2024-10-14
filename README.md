@@ -2,10 +2,10 @@
 ### Selection: 
 * Roulette wheel selection
 * Tournament Selection
-* Rank Selection
+* <del> Rank Selection </del>
 * Elitism Selection (đã làm)
 ### Crossover
-* Single-Point Crossover
+* <del>Single-Point Crossover</del>
 * Two-Point Crossover
 * Uniform crossover 
 * Order Crossover (đã làm)
