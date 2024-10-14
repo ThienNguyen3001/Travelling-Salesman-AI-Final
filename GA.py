@@ -11,7 +11,7 @@ def selection(population, fitness_scores):
     return selected_routes
 
 def crossover(parent1, parent2):
-    split_index = random.randint(1, len(parent1) - 2)
+    split_index = random.randint(1, len(parent1) - 1)
     child1_part1 = parent1[:split_index]
     child1_part2 = [city for city in parent2 if city not in child1_part1]
     child1 = child1_part1 + child1_part2
@@ -24,7 +24,7 @@ def crossover(parent1, parent2):
 
 def mutate(route, mutation_rate):
     # Ensure that city 0 stays fixed at the start
-    for i in range(1, len(route)):  # Start at index 1, skip city 0
+    for i in range(len(route)):  
         if random.uniform(0, 1) < mutation_rate:
             j = random.randint(1, len(route) - 1)  # Swap within non-starting cities
             route[i], route[j] = route[j], route[i]  # Swap mutation
