@@ -49,11 +49,42 @@ def order_crossover(parent1, parent2):
 
     return child1, child2
 
+#rank kết hợp với two point có thể giải đến problem4
+def two_point_crossover(parent1, parent2):
+    # Select two random points
+    point1 = random.randint(1, len(parent1) - 1)
+    point2 = random.randint(1, len(parent1) - 1)
+
+    # swap if point 1>point 2
+    if point1 > point2:
+        point1, point2 = point2, point1
+
+    # Crossover for child1
+    child1_part1 = parent1[:point1]
+    child1_middle = [city for city in parent2[point1:point2] if city not in child1_part1]
+    child1_part3 = [city for city in parent1[point2:] if city not in child1_part1 + child1_middle]
+    
+    # Fill missing cities from parent2
+    missing_cities1 = [city for city in parent2 if city not in child1_part1 + child1_middle + child1_part3]
+    child1 = child1_part1 + child1_middle + child1_part3 + missing_cities1
+
+    # Crossover for child2 (similar to child1)
+    child2_part1 = parent2[:point1]
+    child2_middle = [city for city in parent1[point1:point2] if city not in child2_part1]
+    child2_part3 = [city for city in parent2[point2:] if city not in child2_part1 + child2_middle]
+    
+    # Fill missing cities from parent1
+    missing_cities2 = [city for city in parent1 if city not in child2_part1 + child2_middle + child2_part3]
+    child2 = child2_part1 + child2_middle + child2_part3 + missing_cities2
+
+    return child1, child2
+
 def crossover(parent1, parent2, algorithm='order'):
     if algorithm == 'order':
         return order_crossover(parent1, parent2)
-    else:
-        return [], []
+    if algorithm == 'two_point':
+        return two_point_crossover(parent1,parent2)
+    return [],[]
 
 def swap_mutate(route, mutation_rate):
     # Ensure that city 0 stays fixed at the start
