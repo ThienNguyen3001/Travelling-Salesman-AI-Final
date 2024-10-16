@@ -1,19 +1,19 @@
-## Note: mỗi hàm selection, crossover, mutate sẽ làm khoảng 2-3 thuật toán nữa, cụ thể: 
+## Giai đoạn 1: Deadline: 20/10
 ### Selection: 
-* Roulette wheel selection
-* Tournament Selection
-* Rank Selection 
+* Roulette wheel selection (Hưởng)
+* Tournament Selection (Huy)
+* Rank Selection (Nhựt)
 * Elitism Selection (đã làm)
 ### Crossover
-* Single-Point Crossover
-* Two-Point Crossover
-* Uniform crossover 
+* Single-Point Crossover (Huy)
+* Two-Point Crossover (Nhựt)
+* Uniform crossover (Hưởng)
 * Order Crossover (đã làm)
 ### Mutation
-* Scramble Mutation
-* Inversion Mutation
-* Insertion mutation
+* Scramble Mutation (Nhựt)
+* Inversion Mutation (Huy)
+* Insertion mutation (Hưởng)
 * Swap Mutation (đã làm)
 ### Làm vào file GA.py như mẫu
 
-## Có 2 bài test case mẫu (problem 2 và problem 4) đã có đáp án, dự kiến sẽ test thuật toán trên đó. Dùng hàm plot_fitness đã định nghĩa để trực quan hóa độ chính xác của thuật toán. Code thí nghiệm ở file Experiment.ipynb. Đưa ra những kết luận ngay trong file, làm tiền đề cho tiểu luận. Về thí nghiệm như nào sẽ bàn bạc sau.
+Giai đoạn 2: Thí nghiệm (22/10 - 29/10) 
