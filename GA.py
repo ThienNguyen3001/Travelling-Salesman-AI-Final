@@ -1,4 +1,5 @@
 import random
+import numpy as np
 from TSP import generate_random_route, compute_route_distance
 
 def elitism_selection(population, fitness_scores):
@@ -10,11 +11,31 @@ def elitism_selection(population, fitness_scores):
         fitness_scores[max_fitness_index] = 0  # Mark as selected
     return selected_routes
 
+#voi mutate = 0,5 sẽ cho ra đáp án đến problem3, còn lại thì chỉ gần đúng
+def rank_selection(population, fitness_scores):
+    sorted_population = [ind for _, ind in sorted(zip(fitness_scores, population))] #sort with fitness
+    ranks = np.arange(1, len(population) + 1) #add rank
+
+    probabilities = 1 / ranks
+    probabilities /= probabilities.sum()    
+    cumulative_probabilities = np.cumsum(probabilities) #mảng cộng dồn
+
+    selected_individuals = []
+    population_size = len(population)
+    for i in range(population_size // 2):
+        r = np.random.rand()  # Tạo số ngẫu nhiên giữa 0 và 1
+        for i, cum_prob in enumerate(cumulative_probabilities):
+            if r <= cum_prob:
+                selected_individuals.append(sorted_population[i])
+                break
+    return selected_individuals
+
 def selection (population, fitness_scores,algorithm = 'elitism'):
     if algorithm == 'elitism':
         return elitism_selection(population, fitness_scores)
-    else:
-        return []
+    if algorithm == 'rank':
+        return rank_selection(population, fitness_scores)
+    return []
     
 def order_crossover(parent1, parent2):
     split_index = random.randint(1, len(parent1) - 1)
