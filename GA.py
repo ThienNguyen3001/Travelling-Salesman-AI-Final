@@ -49,7 +49,7 @@ def order_crossover(parent1, parent2):
 
     return child1, child2
 
-#rank kết hợp với two point có thể giải đến problem4
+#rank kết hợp với two point có thể giải đến problem4, mutate = 0,05
 def two_point_crossover(parent1, parent2):
     # Select two random points
     point1 = random.randint(1, len(parent1) - 1)
@@ -94,11 +94,28 @@ def swap_mutate(route, mutation_rate):
             route[i], route[j] = route[j], route[i]  # Swap mutation
     return route
 
+#tổ hợp cua nhut co the giai den problem4 với mutate = 0.05
+def scramble_mutate(route, mutation_rate):
+    if random.random() < mutation_rate:
+        # Select two points
+        point1 = random.randint(1, len(route) - 2)  # Ensure point1 is valid
+        point2 = random.randint(point1 + 1, len(route) - 1)
+
+        # Scramble the segment between point1 and point2
+        scrambled_segment = route[point1:point2]
+        random.shuffle(scrambled_segment)
+
+        # Create the mutated route
+        mutated_route = route[:point1] + scrambled_segment + route[point2:]
+        return mutated_route
+    return route
+
 def mutate(route, mutation_rate, algorithm='swap'):
     if algorithm == 'swap':
         return swap_mutate(route, mutation_rate)
-    else:
-        return []
+    if algorithm == 'scramble':
+        return scramble_mutate(route,mutation_rate)
+    return []
 
 def fitness(population, distances):
     fitness_scores = []
