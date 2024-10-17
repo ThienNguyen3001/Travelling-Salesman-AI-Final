@@ -17,3 +17,5 @@
 ### Làm vào file GA.py như mẫu
 
 Giai đoạn 2: Thí nghiệm (22/10 - 29/10) 
+
+jghfgagfjsjhgfhjsghjgsfs
