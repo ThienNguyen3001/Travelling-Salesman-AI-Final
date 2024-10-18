@@ -1,4 +1,5 @@
 import random
+import numpy as np
 from TSP import generate_random_route, compute_route_distance
 
 #tournament selection
@@ -16,11 +17,43 @@ def tournament_selection(population, fitness_scores, tournament_size=3):
 
     return selected_routes
 
-def selection(population, fitness_scores, algorithm='tournament', tournament_size=3):
+#voi mutate = 0,5 sẽ cho ra đáp án đến problem3, còn lại thì chỉ gần đúng
+def rank_selection(population, fitness_scores):
+    sorted_population = [ind for _, ind in sorted(zip(fitness_scores, population))] #sort with fitness
+    ranks = np.arange(1, len(population) + 1) #add rank
+
+    probabilities = 1 / ranks
+    probabilities /= probabilities.sum()    
+    cumulative_probabilities = np.cumsum(probabilities) #mảng cộng dồn
+
+    selected_individuals = []
+    population_size = len(population)
+    for i in range(population_size // 2):
+        r = np.random.rand()  # Tạo số ngẫu nhiên giữa 0 và 1
+        for i, cum_prob in enumerate(cumulative_probabilities):
+            if r <= cum_prob:
+                selected_individuals.append(sorted_population[i])
+                break
+    return selected_individuals
+
+def selection (population, fitness_scores,algorithm = 'elitism'):
+    if algorithm == 'elitism':
+        return elitism_selection(population, fitness_scores)
+    if algorithm == 'rank':
+        return rank_selection(population, fitness_scores)
     if algorithm == 'tournament':
         return tournament_selection(population, fitness_scores, tournament_size)
-    else:
-        return []
+    return []
+    
+def order_crossover(parent1, parent2):
+    split_index = random.randint(1, len(parent1) - 1)
+    child1_part1 = parent1[:split_index]
+    child1_part2 = [city for city in parent2 if city not in child1_part1]
+    child1 = child1_part1 + child1_part2
+    
+    child2_part1 = parent2[:split_index]
+    child2_part2 = [city for city in parent1 if city not in child2_part1]
+    child2 = child2_part1 + child2_part2
 
 #Single-Point crossover
 def single_point_crossover(parent1, parent2):
@@ -34,11 +67,44 @@ def single_point_crossover(parent1, parent2):
     child2 += [city for city in parent1 if city not in child2]
     return child1, child2
 
-def crossover(parent1, parent2, algorithm='single_point'):
+#rank kết hợp với two point có thể giải đến problem4, mutate = 0,05
+def two_point_crossover(parent1, parent2):
+    # Select two random points
+    point1 = random.randint(1, len(parent1) - 1)
+    point2 = random.randint(1, len(parent1) - 1)
+
+    # swap if point 1>point 2
+    if point1 > point2:
+        point1, point2 = point2, point1
+
+    # Crossover for child1
+    child1_part1 = parent1[:point1]
+    child1_middle = [city for city in parent2[point1:point2] if city not in child1_part1]
+    child1_part3 = [city for city in parent1[point2:] if city not in child1_part1 + child1_middle]
+    
+    # Fill missing cities from parent2
+    missing_cities1 = [city for city in parent2 if city not in child1_part1 + child1_middle + child1_part3]
+    child1 = child1_part1 + child1_middle + child1_part3 + missing_cities1
+
+    # Crossover for child2 (similar to child1)
+    child2_part1 = parent2[:point1]
+    child2_middle = [city for city in parent1[point1:point2] if city not in child2_part1]
+    child2_part3 = [city for city in parent2[point2:] if city not in child2_part1 + child2_middle]
+    
+    # Fill missing cities from parent1
+    missing_cities2 = [city for city in parent1 if city not in child2_part1 + child2_middle + child2_part3]
+    child2 = child2_part1 + child2_middle + child2_part3 + missing_cities2
+
+    return child1, child2
+
+def crossover(parent1, parent2, algorithm='order'):
+    if algorithm == 'order':
+        return order_crossover(parent1, parent2)
+    if algorithm == 'two_point':
+        return two_point_crossover(parent1,parent2)
     if algorithm == 'single_point':
         return single_point_crossover(parent1, parent2)
-    else:
-        return [], []
+    return [],[]
 
 #Inversion Mutation
 def inversion_mutate(route, mutation_rate):
@@ -50,11 +116,30 @@ def inversion_mutate(route, mutation_rate):
         route[start:end] = reversed(route[start:end])
     return route
 
-def mutate(route, mutation_rate, algorithm='inversion'):
+#tổ hợp cua nhut co the giai den problem4 với mutate = 0.05
+def scramble_mutate(route, mutation_rate):
+    if random.random() < mutation_rate:
+        # Select two points
+        point1 = random.randint(1, len(route) - 2)  # Ensure point1 is valid
+        point2 = random.randint(point1 + 1, len(route) - 1)
+
+        # Scramble the segment between point1 and point2
+        scrambled_segment = route[point1:point2]
+        random.shuffle(scrambled_segment)
+
+        # Create the mutated route
+        mutated_route = route[:point1] + scrambled_segment + route[point2:]
+        return mutated_route
+    return route
+
+def mutate(route, mutation_rate, algorithm='swap'):
+    if algorithm == 'swap':
+        return swap_mutate(route, mutation_rate)
+    if algorithm == 'scramble':
+        return scramble_mutate(route,mutation_rate)
     if algorithm == 'inversion':
         return inversion_mutate(route, mutation_rate)
-    else:
-        return []
+    return []
 
 def fitness(population, distances):
     fitness_scores = []
