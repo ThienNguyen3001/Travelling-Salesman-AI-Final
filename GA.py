@@ -42,7 +42,7 @@ def selection (population, fitness_scores,algorithm = 'elitism'):
     if algorithm == 'rank':
         return rank_selection(population, fitness_scores)
     if algorithm == 'tournament':
-        return tournament_selection(population, fitness_scores, tournament_size)
+        return tournament_selection(population, fitness_scores, tournament_size = 3)
     return []
     
 def order_crossover(parent1, parent2):
