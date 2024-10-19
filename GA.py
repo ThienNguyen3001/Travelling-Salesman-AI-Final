@@ -3,6 +3,15 @@ import numpy as np
 from TSP import generate_random_route, compute_route_distance
 
 #tournament selection
+def elitism_selection(population, fitness_scores):
+    selected_routes = []
+    population_size = len(population)
+    for i in range(population_size // 2):
+        max_fitness_index = fitness_scores.index(min(fitness_scores))  # Minimize distance
+        selected_routes.append(population[max_fitness_index])
+        fitness_scores[max_fitness_index] = 0  # Mark as selected
+    return selected_routes
+
 def tournament_selection(population, fitness_scores, tournament_size=3):
     selected_routes = []
     population_size = len(population)
@@ -130,6 +139,14 @@ def scramble_mutate(route, mutation_rate):
         # Create the mutated route
         mutated_route = route[:point1] + scrambled_segment + route[point2:]
         return mutated_route
+    return route
+
+def swap_mutate(route, mutation_rate):
+    # Ensure that city 0 stays fixed at the start
+    for i in range(1,len(route)):  
+        if random.uniform(0, 1) < mutation_rate:
+            j = random.randint(1, len(route) - 1)  # Swap within non-starting cities
+            route[i], route[j] = route[j], route[i]  # Swap mutation
     return route
 
 def mutate(route, mutation_rate, algorithm='swap'):
