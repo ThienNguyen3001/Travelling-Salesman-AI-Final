@@ -45,13 +45,24 @@ def rank_selection(population, fitness_scores):
                 break
     return selected_individuals
 
-def selection (population, fitness_scores,algorithm = 'elitism'):
+def roulette_wheel_selection(population, fitness_scores):
+    total_fitness = sum(fitness_scores)
+    pick = random.uniform(0, total_fitness)
+    current = 0
+    for i, fitness in enumerate(fitness_scores):
+        current += fitness
+        if current > pick:
+            return population[i]
+
+def selection (population, fitness_scores,algorithm = 'roulette_wheel'):
     if algorithm == 'elitism':
         return elitism_selection(population, fitness_scores)
     if algorithm == 'rank':
         return rank_selection(population, fitness_scores)
     if algorithm == 'tournament':
         return tournament_selection(population, fitness_scores, tournament_size = 3)
+    if algorithm == 'roulette_wheel':
+        return roulette_wheel_selection(population, fitness_scores)
     return []
     
 def order_crossover(parent1, parent2):
@@ -106,13 +117,35 @@ def two_point_crossover(parent1, parent2):
 
     return child1, child2
 
-def crossover(parent1, parent2, algorithm='order'):
+# Hàm lai ghép sử dụng Uniform crossover
+def uniform_crossover(parent1, parent2):
+    child = [0] * len(parent1)
+    child[0] = 0  # Luôn bắt đầu từ thành phố 0
+    for i in range(1, len(parent1)):
+        if random.random() < 0.5:
+            child[i] = parent1[i]
+        else:
+            child[i] = parent2[i]
+    
+    # Sửa các thành phố trùng lặp
+    used_cities = set([0])
+    for i in range(1, len(child)):
+        if child[i] in used_cities:
+            unused_cities = set(range(1, len(child))) - used_cities
+            child[i] = random.choice(list(unused_cities))
+        used_cities.add(child[i])
+    
+    return child
+
+def crossover(parent1, parent2, algorithm='uniform'):
     if algorithm == 'order':
         return order_crossover(parent1, parent2)
     if algorithm == 'two_point':
         return two_point_crossover(parent1,parent2)
     if algorithm == 'single_point':
         return single_point_crossover(parent1, parent2)
+    if algorithm == 'uniform':
+        return uniform_crossover(parent1, parent2)
     return [],[]
 
 #Inversion Mutation
@@ -149,13 +182,25 @@ def swap_mutate(route, mutation_rate):
             route[i], route[j] = route[j], route[i]  # Swap mutation
     return route
 
-def mutate(route, mutation_rate, algorithm='swap'):
+# Hàm đột biến sử dụng Insertion mutation
+def insertion_mutate(route, mutation_rate):
+    if random.random() < mutation_rate:
+        idx1, idx2 = random.sample(range(1, len(route)), 2)
+        if idx1 > idx2:
+            idx1, idx2 = idx2, idx1
+        city = route.pop(idx2)
+        route.insert(idx1, city)
+    return route
+
+def mutate(route, mutation_rate, algorithm='insertion'):
     if algorithm == 'swap':
         return swap_mutate(route, mutation_rate)
     if algorithm == 'scramble':
         return scramble_mutate(route,mutation_rate)
     if algorithm == 'inversion':
         return inversion_mutate(route, mutation_rate)
+    if algorithm == 'insertion':
+        return insertion_mutate(route, mutation_rate)
     return []
 
 def fitness(population, distances):
@@ -166,7 +211,7 @@ def fitness(population, distances):
     return fitness_scores
 
 def genetic_algorithm(n_cities, distances, population_size=100, generations=100, mutation_rate=0.01, 
-                      mutation_algorithm='inversion', selection_algorithm='tournament', crossover_algorithm='single_point'):
+                      mutation_algorithm='insertion', selection_algorithm='roulette_wheel', crossover_algorithm='uniform'):
     # Tạo quần thể ban đầu 
     population = [generate_random_route(n_cities) for _ in range(population_size)]
 
