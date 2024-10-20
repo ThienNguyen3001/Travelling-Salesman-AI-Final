@@ -46,13 +46,21 @@ def rank_selection(population, fitness_scores):
     return selected_individuals
 
 def roulette_wheel_selection(population, fitness_scores):
-    total_fitness = sum(fitness_scores)
-    pick = random.uniform(0, total_fitness)
-    current = 0
-    for i, fitness in enumerate(fitness_scores):
-        current += fitness
-        if current > pick:
-            return population[i]
+    # Chuyển đổi fitness scores thành các giá trị dương (vì chúng ta đang tối thiểu hóa khoảng cách)
+    max_fitness = max(fitness_scores)
+    adjusted_fitness = [max_fitness - score for score in fitness_scores]
+    total_fitness = sum(adjusted_fitness)
+
+    selected_routes = []
+    for _ in range(len(population) // 2):
+        pick = random.uniform(0, total_fitness)
+        current = 0
+        for i, fitness in enumerate(adjusted_fitness):
+            current += fitness
+            if current > pick:
+                selected_routes.append(population[i])
+                break
+    return selected_routes
 
 def selection (population, fitness_scores,algorithm = 'roulette_wheel'):
     if algorithm == 'elitism':
@@ -119,23 +127,28 @@ def two_point_crossover(parent1, parent2):
 
 # Hàm lai ghép sử dụng Uniform crossover
 def uniform_crossover(parent1, parent2):
-    child = [0] * len(parent1)
-    child[0] = 0  # Luôn bắt đầu từ thành phố 0
+    child1 = [0] * len(parent1)
+    child2 = [0] * len(parent1)
+    child1[0] = child2[0] = 0  # Luôn bắt đầu từ thành phố 0
+
     for i in range(1, len(parent1)):
         if random.random() < 0.5:
-            child[i] = parent1[i]
+            child1[i] = parent1[i]
+            child2[i] = parent2[i]
         else:
-            child[i] = parent2[i]
+            child1[i] = parent2[i]
+            child2[i] = parent1[i]
     
     # Sửa các thành phố trùng lặp
-    used_cities = set([0])
-    for i in range(1, len(child)):
-        if child[i] in used_cities:
-            unused_cities = set(range(1, len(child))) - used_cities
-            child[i] = random.choice(list(unused_cities))
-        used_cities.add(child[i])
+    for child in [child1, child2]:
+        used_cities = set([0])
+        for i in range(1, len(child)):
+            if child[i] in used_cities:
+                unused_cities = set(range(1, len(child))) - used_cities
+                child[i] = random.choice(list(unused_cities))
+            used_cities.add(child[i])
     
-    return child
+    return child1, child2
 
 def crossover(parent1, parent2, algorithm='uniform'):
     if algorithm == 'order':
@@ -185,11 +198,15 @@ def swap_mutate(route, mutation_rate):
 # Hàm đột biến sử dụng Insertion mutation
 def insertion_mutate(route, mutation_rate):
     if random.random() < mutation_rate:
+        # Chọn hai vị trí ngẫu nhiên (không bao gồm thành phố đầu tiên)
         idx1, idx2 = random.sample(range(1, len(route)), 2)
         if idx1 > idx2:
             idx1, idx2 = idx2, idx1
+        
+        # Lấy thành phố tại idx2 và chèn nó vào vị trí idx1
         city = route.pop(idx2)
         route.insert(idx1, city)
+    
     return route
 
 def mutate(route, mutation_rate, algorithm='insertion'):
