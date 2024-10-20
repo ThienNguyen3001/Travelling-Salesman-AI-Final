@@ -52,7 +52,8 @@ def roulette_wheel_selection(population, fitness_scores):
     total_fitness = sum(adjusted_fitness)
 
     selected_routes = []
-    for _ in range(len(population) // 2):
+    selection_size = max(2, len(population) // 2)  # Đảm bảo ít nhất 2 cá thể được chọn
+    for _ in range(selection_size):
         pick = random.uniform(0, total_fitness)
         current = 0
         for i, fitness in enumerate(adjusted_fitness):
@@ -232,41 +233,54 @@ def genetic_algorithm(n_cities, distances, population_size=100, generations=100,
     # Tạo quần thể ban đầu 
     population = [generate_random_route(n_cities) for _ in range(population_size)]
 
+    best_route = None
+    best_distance = float('inf')
+
     for generation in range(generations):
         # Tính điểm fitness cho từng cá thể
         fitness_scores = fitness(population, distances)
 
-        # Chọn những tuyến đường tốt nhất để tái sản xuất (Sử dụng thuật toán tournament selection)
+        # Cập nhật tuyến đường tốt nhất
+        current_best = min(zip(fitness_scores, population), key=lambda x: x[0])
+        if current_best[0] < best_distance:
+            best_distance = current_best[0]
+            best_route = current_best[1]
+
+        # Chọn những tuyến đường tốt nhất để tái sản xuất
         selected_routes = selection(population, fitness_scores, selection_algorithm)
+
+        # Đảm bảo có đủ cá thể được chọn
+        if len(selected_routes) < 2:
+            selected_routes = population[:2]
 
         # Thực hiện crossover để tạo ra các cá thể con
         offspring = []
-        for i in range(population_size // 2):
-            parent1, parent2 = random.sample(selected_routes, 2)  # Chọn ngẫu nhiên hai bố mẹ từ các cá thể đã được chọn
-            child1, child2 = crossover(parent1, parent2, crossover_algorithm)  # Sử dụng single-point crossover
+        for i in range(0, len(selected_routes), 2):
+            if i + 1 < len(selected_routes):
+                parent1, parent2 = selected_routes[i], selected_routes[i+1]
+            else:
+                parent1, parent2 = selected_routes[i], selected_routes[0]  # Lặp lại nếu số lẻ
+            child1, child2 = uniform_crossover(parent1, parent2)
             offspring.extend([child1, child2])
+
+        # Cắt bớt nếu quần thể mới lớn hơn kích thước quần thể ban đầu
+        offspring = offspring[:population_size]
 
         # Đột biến các cá thể con
         for i in range(len(offspring)):
-            offspring[i] = mutate(offspring[i], mutation_rate, mutation_algorithm)  # Sử dụng inversion mutation
+            offspring[i] = mutate(offspring[i], mutation_rate, mutation_algorithm)
 
         # Thay thế quần thể cũ bằng quần thể mới
-        population = offspring
+        population = offspring + random.choices(population, k=population_size - len(offspring))
 
-    # Tìm tuyến đường tốt nhất trong quần thể cuối cùng
-    best_route = population[0]
+    # Đảm bảo rằng tuyến đường quay về điểm bắt đầu (city 0)
+    best_route = best_route + [0] if best_route[0] != 0 else best_route + [best_route[0]]
     best_distance = compute_route_distance(best_route, distances)
-    for route in population:
-        route_distance = compute_route_distance(route, distances)
-        if route_distance < best_distance:
-            best_route = route
-            best_distance = route_distance
-    best_route = best_route + [0]  # Đảm bảo rằng tuyến đường quay về điểm bắt đầu (city 0)
 
     # Trả về kết quả tốt nhất
     solution = {
         'route': best_route,
         'distance': best_distance,
-        'fitness': fitness_scores
+        'fitness': best_distance  # Sử dụng khoảng cách như là điểm fitness
     }
     return solution
