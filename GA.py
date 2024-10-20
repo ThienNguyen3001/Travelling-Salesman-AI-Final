@@ -166,9 +166,9 @@ def crossover(parent1, parent2, algorithm='order'):
 def inversion_mutate(route, mutation_rate):
     
     if random.uniform(0, 1) < mutation_rate:
-        # Chọn hai vị trí ngẫu nhiên trong tuyến đường
+        # Chọn hai vị trí ngẫu nhiên
         start, end = sorted(random.sample(range(1, len(route)), 2)) 
-        # Đảo ngược thứ tự các thành phố trong đoạn được chọn
+        
         route[start:end] = reversed(route[start:end])
     return route
 
@@ -231,27 +231,27 @@ def genetic_algorithm(n_cities, distances, population_size=100, generations=100,
     population = [generate_random_route(n_cities) for _ in range(population_size)]
 
     for generation in range(generations):
-        # Tính điểm fitness cho từng cá thể
+        # Tính điểm fitness
         fitness_scores = fitness(population, distances)
 
-        # Chọn những tuyến đường tốt nhất để tái sản xuất (Sử dụng thuật toán tournament selection)
+        # Chọn những tuyến đường tốt nhất
         selected_routes = selection(population, fitness_scores, selection_algorithm)
 
-        # Thực hiện crossover để tạo ra các cá thể con
+        # Thực hiện crossover
         offspring = []
         for i in range(population_size // 2):
-            parent1, parent2 = random.sample(selected_routes, 2)  # Chọn ngẫu nhiên hai bố mẹ từ các cá thể đã được chọn
+            parent1, parent2 = random.sample(selected_routes, 2)  # Chọn ngẫu nhiên hai bố mẹ 
             child1, child2 = crossover(parent1, parent2, crossover_algorithm) 
             offspring.extend([child1, child2])
 
         # Đột biến các cá thể con
         for i in range(len(offspring)):
-            offspring[i] = mutate(offspring[i], mutation_rate, mutation_algorithm)  # Sử dụng inversion mutation
+            offspring[i] = mutate(offspring[i], mutation_rate, mutation_algorithm)
 
         # Thay thế quần thể cũ bằng quần thể mới
         population = offspring
 
-    # Tìm tuyến đường tốt nhất trong quần thể cuối cùng
+    # Tìm đường tốt nhất trong quần thể cuối cùng
     best_route = population[0]
     best_distance = compute_route_distance(best_route, distances)
     for route in population:
@@ -261,7 +261,7 @@ def genetic_algorithm(n_cities, distances, population_size=100, generations=100,
             best_distance = route_distance
     best_route = best_route + [0]  
 
-    # Trả về kết quả tốt nhất
+    # Trả về kết quả
     solution = {
         'route': best_route,
         'distance': best_distance,
