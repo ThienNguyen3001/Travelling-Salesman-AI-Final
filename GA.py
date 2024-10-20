@@ -45,13 +45,33 @@ def rank_selection(population, fitness_scores):
                 break
     return selected_individuals
 
-def selection (population, fitness_scores,algorithm = 'elitism'):
+def roulette_wheel_selection(population, fitness_scores):
+    # Chuyển đổi fitness scores thành các giá trị dương (vì chúng ta đang tối thiểu hóa khoảng cách)
+    max_fitness = max(fitness_scores)
+    adjusted_fitness = [max_fitness - score for score in fitness_scores]
+    total_fitness = sum(adjusted_fitness)
+
+    selected_routes = []
+    selection_size = max(2, len(population) // 2)  # Đảm bảo ít nhất 2 cá thể được chọn
+    for _ in range(selection_size):
+        pick = random.uniform(0, total_fitness)
+        current = 0
+        for i, fitness in enumerate(adjusted_fitness):
+            current += fitness
+            if current > pick:
+                selected_routes.append(population[i])
+                break
+    return selected_routes
+
+def selection (population, fitness_scores,algorithm = 'roulette_wheel'):
     if algorithm == 'elitism':
         return elitism_selection(population, fitness_scores)
     if algorithm == 'rank':
         return rank_selection(population, fitness_scores)
     if algorithm == 'tournament':
         return tournament_selection(population, fitness_scores, tournament_size = 3)
+    if algorithm == 'roulette_wheel':
+        return roulette_wheel_selection(population, fitness_scores)
     return []
     
 def order_crossover(parent1, parent2):
@@ -106,13 +126,40 @@ def two_point_crossover(parent1, parent2):
 
     return child1, child2
 
-def crossover(parent1, parent2, algorithm='order'):
+# Hàm lai ghép sử dụng Uniform crossover
+def uniform_crossover(parent1, parent2):
+    child1 = [0] * len(parent1)
+    child2 = [0] * len(parent1)
+    child1[0] = child2[0] = 0  # Luôn bắt đầu từ thành phố 0
+
+    for i in range(1, len(parent1)):
+        if random.random() < 0.5:
+            child1[i] = parent1[i]
+            child2[i] = parent2[i]
+        else:
+            child1[i] = parent2[i]
+            child2[i] = parent1[i]
+    
+    # Sửa các thành phố trùng lặp
+    for child in [child1, child2]:
+        used_cities = set([0])
+        for i in range(1, len(child)):
+            if child[i] in used_cities:
+                unused_cities = set(range(1, len(child))) - used_cities
+                child[i] = random.choice(list(unused_cities))
+            used_cities.add(child[i])
+    
+    return child1, child2
+
+def crossover(parent1, parent2, algorithm='uniform'):
     if algorithm == 'order':
         return order_crossover(parent1, parent2)
     if algorithm == 'two_point':
         return two_point_crossover(parent1,parent2)
     if algorithm == 'single_point':
         return single_point_crossover(parent1, parent2)
+    if algorithm == 'uniform':
+        return uniform_crossover(parent1, parent2)
     return [],[]
 
 #Inversion Mutation
@@ -149,13 +196,29 @@ def swap_mutate(route, mutation_rate):
             route[i], route[j] = route[j], route[i]  # Swap mutation
     return route
 
-def mutate(route, mutation_rate, algorithm='swap'):
+# Hàm đột biến sử dụng Insertion mutation
+def insertion_mutate(route, mutation_rate):
+    if random.random() < mutation_rate:
+        # Chọn hai vị trí ngẫu nhiên (không bao gồm thành phố đầu tiên)
+        idx1, idx2 = random.sample(range(1, len(route)), 2)
+        if idx1 > idx2:
+            idx1, idx2 = idx2, idx1
+        
+        # Lấy thành phố tại idx2 và chèn nó vào vị trí idx1
+        city = route.pop(idx2)
+        route.insert(idx1, city)
+    
+    return route
+
+def mutate(route, mutation_rate, algorithm='insertion'):
     if algorithm == 'swap':
         return swap_mutate(route, mutation_rate)
     if algorithm == 'scramble':
         return scramble_mutate(route,mutation_rate)
     if algorithm == 'inversion':
         return inversion_mutate(route, mutation_rate)
+    if algorithm == 'insertion':
+        return insertion_mutate(route, mutation_rate)
     return []
 
 def fitness(population, distances):
@@ -166,45 +229,58 @@ def fitness(population, distances):
     return fitness_scores
 
 def genetic_algorithm(n_cities, distances, population_size=100, generations=100, mutation_rate=0.01, 
-                      mutation_algorithm='inversion', selection_algorithm='tournament', crossover_algorithm='single_point'):
+                      mutation_algorithm='insertion', selection_algorithm='roulette_wheel', crossover_algorithm='uniform'):
     # Tạo quần thể ban đầu 
     population = [generate_random_route(n_cities) for _ in range(population_size)]
+
+    best_route = None
+    best_distance = float('inf')
 
     for generation in range(generations):
         # Tính điểm fitness cho từng cá thể
         fitness_scores = fitness(population, distances)
 
-        # Chọn những tuyến đường tốt nhất để tái sản xuất (Sử dụng thuật toán tournament selection)
+        # Cập nhật tuyến đường tốt nhất
+        current_best = min(zip(fitness_scores, population), key=lambda x: x[0])
+        if current_best[0] < best_distance:
+            best_distance = current_best[0]
+            best_route = current_best[1]
+
+        # Chọn những tuyến đường tốt nhất để tái sản xuất
         selected_routes = selection(population, fitness_scores, selection_algorithm)
+
+        # Đảm bảo có đủ cá thể được chọn
+        if len(selected_routes) < 2:
+            selected_routes = population[:2]
 
         # Thực hiện crossover để tạo ra các cá thể con
         offspring = []
-        for i in range(population_size // 2):
-            parent1, parent2 = random.sample(selected_routes, 2)  # Chọn ngẫu nhiên hai bố mẹ từ các cá thể đã được chọn
-            child1, child2 = crossover(parent1, parent2, crossover_algorithm)  # Sử dụng single-point crossover
+        for i in range(0, len(selected_routes), 2):
+            if i + 1 < len(selected_routes):
+                parent1, parent2 = selected_routes[i], selected_routes[i+1]
+            else:
+                parent1, parent2 = selected_routes[i], selected_routes[0]  # Lặp lại nếu số lẻ
+            child1, child2 = uniform_crossover(parent1, parent2)
             offspring.extend([child1, child2])
+
+        # Cắt bớt nếu quần thể mới lớn hơn kích thước quần thể ban đầu
+        offspring = offspring[:population_size]
 
         # Đột biến các cá thể con
         for i in range(len(offspring)):
-            offspring[i] = mutate(offspring[i], mutation_rate, mutation_algorithm)  # Sử dụng inversion mutation
+            offspring[i] = mutate(offspring[i], mutation_rate, mutation_algorithm)
 
         # Thay thế quần thể cũ bằng quần thể mới
-        population = offspring
+        population = offspring + random.choices(population, k=population_size - len(offspring))
 
-    # Tìm tuyến đường tốt nhất trong quần thể cuối cùng
-    best_route = population[0]
+    # Đảm bảo rằng tuyến đường quay về điểm bắt đầu (city 0)
+    best_route = best_route + [0] if best_route[0] != 0 else best_route + [best_route[0]]
     best_distance = compute_route_distance(best_route, distances)
-    for route in population:
-        route_distance = compute_route_distance(route, distances)
-        if route_distance < best_distance:
-            best_route = route
-            best_distance = route_distance
-    best_route = best_route + [0]  # Đảm bảo rằng tuyến đường quay về điểm bắt đầu (city 0)
 
     # Trả về kết quả tốt nhất
     solution = {
         'route': best_route,
         'distance': best_distance,
-        'fitness': fitness_scores
+        'fitness': best_distance  # Sử dụng khoảng cách như là điểm fitness
     }
     return solution
