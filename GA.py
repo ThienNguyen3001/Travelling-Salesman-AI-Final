@@ -54,7 +54,7 @@ def roulette_wheel_selection(population, fitness_scores):
     total_fitness = sum(adjusted_fitness)
 
     selected_routes = []
-    selection_size = len(population) // 2  # Đảm bảo ít nhất 2 cá thể được chọn
+    selection_size = max(2,len(population)) // 2  # Đảm bảo ít nhất 2 cá thể được chọn
     for _ in range(selection_size):
         pick = random.uniform(0, total_fitness)
         current = 0
