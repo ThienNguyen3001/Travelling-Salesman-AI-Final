@@ -1,21 +1,7 @@
-## Giai đoạn 1: Deadline: 20/10
-### Selection: 
-* Roulette wheel selection (Hưởng)
-* Tournament Selection (Huy)
-* Rank Selection (Nhựt)
-* Elitism Selection (đã làm)
-### Crossover
-* Single-Point Crossover (Huy)
-* Two-Point Crossover (Nhựt)
-* Uniform crossover (Hưởng)
-* Order Crossover (đã làm)
-### Mutation
-* Scramble Mutation (Nhựt)
-* Inversion Mutation (Huy)
-* Insertion mutation (Hưởng)
-* Swap Mutation (đã làm)
-### Làm vào file GA.py như mẫu
-
-Giai đoạn 2: Thí nghiệm (22/10 - 29/10) 
-
-jghfgagfjsjhgfhjsghjgsfs
+# Giai đoạn 1: Code thuật toán (cho là đã xong)
+# Giai đoạn 2: Thí nghiệm (22/10 - 31/10)
+## Tham khảo các bộ tham số sau đây: 
+* Population_size = [100,500,1000]
+* Generations = [100,500,1000]
+* Mutation_rate = [0.01,0.05,0.1]
+## Mỗi người hãy tham khảo và chọn ra những tham số phù hợp, khi làm hãy chú ý ghi chú lại tham số và rút ra luôn kết luận sau mỗi lần chạy. Tối thiểu mỗi người tầm 6 cái, Yêu cầu phải tạo nhánh riêng và tạo luôn 1 file ```.ipynb``` riêng, đặt tên là tên của ae để không dấu. Ghi chú vào file của mình dưới dạng comment cho mỗi thí nghiệm. Kết hợp với hàm plot_fitness (ae copy qua) để rút ra kết luận về độ fitness với mỗi thí nghiệm.
