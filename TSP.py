@@ -4,7 +4,7 @@ random.seed(42)
 def generate_random_route(n_cities):
     route = list(range(1, n_cities))  
     random.shuffle(route)
-    return [0] + route  
+    return [0]+route  
 
 def compute_distance(city1, city2, distances):
     return distances[city1][city2]
