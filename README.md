@@ -19,7 +19,7 @@
   - Mutation_rate = 0.01
 ### 3. Ảnh hưởng của các dữ liệu bài toán đến kết quả
 * Thuật toán: Như mục 1
-* Data: Test hết
+* Data: Test hết trừ bộ 6 cities
 * Đánh giá: Dùng độ lệch để đánh giá, vd: kq gốc là 1248, kq chạy ra là 1300, đánh giá |1300-1248| = 52. Nên viết hàm vẽ đồ thị kết hợp vòng lặp để vẽ
 * Tham số: Như mục 2
 ### 4. Đánh giá, cải thiện một số tham số và lựa chọn 1 số thuật toán để tìm ra được kết quả chính xác nhất có thể
