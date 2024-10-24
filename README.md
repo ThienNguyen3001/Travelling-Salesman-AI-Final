@@ -25,4 +25,4 @@
 ### 4. Đánh giá, cải thiện một số tham số và lựa chọn 1 số thuật toán để tìm ra được kết quả chính xác nhất có thể
 * Người làm cái này sẽ cố gắng thay thế bất kì tham số nào, chọn bất kì thuật toán nào để giải được càng nhiều data chính xác nhất và nhanh nhất càng tốt. Rồi rút ra lựa chọn thuật toán nào, tham số nào để kết luận toàn bài.
 
-# Yêu cầu chung: Ghi lại chi tiết quá trình làm thông qua cmt, mỗi người tạo 1 nhánh riêng, làm vào file .ipynb riêng đặt tên là người đó. Cần chỉnh sửa gì thì thông qua pull request chứ không tự merge code
+# Yêu cầu chung: Ghi lại chi tiết quá trình làm thông qua comment hoặc markdown, mỗi người tạo 1 nhánh riêng, làm vào file .ipynb riêng đặt tên là người đó. Cần chỉnh sửa gì thì thông qua pull request chứ không tự merge code
