@@ -1,5 +1,5 @@
 # Giai đoạn 1: Code thuật toán (cho là đã xong)
-# Giai đoạn 2: Thí nghiệm (22/10 - 31/10)
+# Giai đoạn 2: Thí nghiệm (22/10 - 3/11)
 
 ## Thí nghiệm chia làm 4 phần riêng: 
 ### 1. Ảnh hưởng của tham số đến fitness
