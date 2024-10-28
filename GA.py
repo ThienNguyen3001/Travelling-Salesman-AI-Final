@@ -261,13 +261,10 @@ def genetic_algorithm(n_cities, distances, population_size=100, generations=100,
             best_distance = route_distance
     best_route = best_route + [best_route[0]]
 
-    # Recalculate fitness scores for the final population
-    final_fitness_scores = fitness(population, distances)
-
     # Trả về kết quả
     solution = {
         'route': best_route,
         'distance': best_distance,
-        'fitness': final_fitness_scores
+        'fitness': fitness_scores
     }
     return solution
