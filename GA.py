@@ -229,10 +229,11 @@ def genetic_algorithm(n_cities, distances, population_size=100, generations=100,
                       mutation_algorithm='swap', selection_algorithm='elitism', crossover_algorithm='order'):
     # Tạo quần thể ban đầu 
     population = [generate_random_route(n_cities) for _ in range(population_size)]
-
+    fitness_history = []
     for generation in range(generations):
         # Tính điểm fitness
         fitness_scores = fitness(population, distances)
+        fitness_history.append(min(fitness_scores))
 
         # Chọn những tuyến đường tốt nhất
         selected_routes = selection(population, fitness_scores, selection_algorithm)
@@ -261,13 +262,10 @@ def genetic_algorithm(n_cities, distances, population_size=100, generations=100,
             best_distance = route_distance
     best_route = best_route + [best_route[0]]
 
-    # Recalculate fitness scores for the final population
-    final_fitness_scores = fitness(population, distances)
-
     # Trả về kết quả
     solution = {
         'route': best_route,
         'distance': best_distance,
-        'fitness': final_fitness_scores
+        'fitness': fitness_history
     }
     return solution
