@@ -48,4 +48,4 @@
 * Người làm cái này sẽ cố gắng thay thế bất kì tham số nào, chọn bất kì thuật toán nào để giải được càng nhiều data chính xác nhất và nhanh nhất càng tốt. Rồi rút ra lựa chọn thuật toán nào, tham số nào để kết luận toàn bài.
 </details>
 
-Giai đoạn 3: UI, tiểu luận và slide (12/10 - 26/10)
+# Giai đoạn 3: UI, tiểu luận và slide (12/10 - 26/10)
