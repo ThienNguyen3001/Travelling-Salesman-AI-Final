@@ -14,3 +14,11 @@ def compute_route_distance(route, distances):
     for i in range(len(route)):
         total_distance += compute_distance(route[i], route[(i+1) % len(route)], distances)
     return total_distance
+
+def read_matrix(file_path):
+    with open(file_path, 'r') as file:
+        matrix = []
+        for line in file:
+            row = list(map(int, line.split()))
+            matrix.append(row)
+    return matrix

@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
+import os
 from GA import genetic_algorithm
+from TSP import read_matrix
 
 class UI:
     def __init__(self, root):
@@ -9,6 +11,10 @@ class UI:
         # Các mục nhập thông số
         self.parameters_frame = ttk.LabelFrame(root, text="Parameters")
         self.parameters_frame.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+
+        # Combobox chọn file dữ liệu
+        self.data_files = [f"data/{file}" for file in os.listdir("data") if file.endswith(".txt")]
+        self.data_file_combobox = self.create_combobox(self.parameters_frame, "Data File", self.data_files, 0)
 
         # Kích thước quần thể
         self.population_size_entry = self.create_label_entry(self.parameters_frame, "Population Size:", 1, "100")
@@ -28,11 +34,11 @@ class UI:
 
         # Nút chạy thuật toán
         self.run_button = tk.Button(root, text="Run", command=self.run_algorithm)
-        self.run_button.grid(row=1, column=0, padx=10, pady=10)
+        self.run_button.grid(row=2, column=0, padx=10, pady=10)
 
         # Kết quả
         self.result_label = ttk.Label(root, text="")
-        self.result_label.grid(row=2, column=0, padx=10, pady=10)
+        self.result_label.grid(row=3, column=0, padx=10, pady=10)
 
     def create_label_entry(self, parent, text, row, default_value=""):
         label = ttk.Label(parent, text=text)
@@ -54,14 +60,6 @@ class UI:
         
         return combobox
 
-    def read_distance_matrix(self, file_path):
-        with open(file_path, 'r') as file:
-            matrix = []
-            for line in file:
-                row = list(map(int, line.split()))
-                matrix.append(row)
-        return matrix
-
     def run_algorithm(self):
         try:
             population_size = int(self.population_size_entry.get())
@@ -70,10 +68,10 @@ class UI:
             selection_algorithm = self.selection_algorithm.get()
             crossover_algorithm = self.crossover_algorithm.get()
             mutation_algorithm = self.mutation_algorithm.get()
+            data_file_path = self.data_file_combobox.get()
 
             # Đọc ma trận khoảng cách từ file
-            file_path = "data/15Cities-1194.txt" 
-            distances = self.read_distance_matrix(file_path)
+            distances = read_matrix(data_file_path)
             # Xác định số lượng thành phố
             n_cities = len(distances)
 
@@ -85,7 +83,7 @@ class UI:
             result_text = f"Best Route: {solution['route']}\nDistance: {solution['distance']}"
             self.result_label.config(text=result_text)
         except ValueError:
-            messagebox.showerror("Invalid Input", "Please enter valid numeric values.")
+            messagebox.showerror("Lỗi nhập", "Hãy nhập giá trị số")
 
 if __name__ == "__main__":
     root = tk.Tk()
