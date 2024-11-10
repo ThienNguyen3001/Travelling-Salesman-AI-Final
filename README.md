@@ -1,6 +1,28 @@
-# Giai đoạn 1: Code thuật toán (cho là đã xong)
-# Giai đoạn 2: Thí nghiệm (22/10 - 3/11)
+<summary><h1>Giai đoạn 1: Code thuật toán (đã hoàn thành)</h1></summary>
+<details>
 
+### Selection
+- **Roulette Wheel Selection** - *Hưởng*
+- **Tournament Selection** - *Huy*
+- **Rank Selection** - *Nhựt*
+- **Elitism Selection** - *(đã làm)*
+
+### Crossover
+- **Single-Point Crossover** - *Huy*
+- **Two-Point Crossover** - *Nhựt*
+- **Uniform Crossover** - *Hưởng*
+- **Order Crossover** - *(đã làm)*
+
+### Mutation
+- **Scramble Mutation** - *Nhựt*
+- **Inversion Mutation** - *Huy*
+- **Insertion Mutation** - *Hưởng*
+- **Swap Mutation** - *(đã làm)*
+
+</details>
+<summary><h1>Giai đoạn 2: Thí nghiệm</h1></summary>
+<details>
+  
 ## Thí nghiệm chia làm 4 phần riêng: 
 ### 1. Ảnh hưởng của tham số đến fitness (Hưởng)
 * Chỉ dùng 3 thuật toán mặc định: selection = 'elitism', crossover = 'order', mutation = 'swap'
@@ -24,5 +46,6 @@
 * Tham số: Như mục 2
 ### 4. Đánh giá, cải thiện một số tham số và lựa chọn 1 số thuật toán để tìm ra được kết quả chính xác nhất có thể (Thiện)
 * Người làm cái này sẽ cố gắng thay thế bất kì tham số nào, chọn bất kì thuật toán nào để giải được càng nhiều data chính xác nhất và nhanh nhất càng tốt. Rồi rút ra lựa chọn thuật toán nào, tham số nào để kết luận toàn bài.
+</details>
 
-# Yêu cầu chung: Ghi lại chi tiết quá trình làm thông qua comment hoặc markdown, mỗi người tạo 1 nhánh riêng, làm vào file .ipynb riêng đặt tên là người đó. Cần chỉnh sửa gì thì thông qua pull request chứ không tự merge code
+Giai đoạn 3: UI, tiểu luận và slide (12/10 - 26/10)
