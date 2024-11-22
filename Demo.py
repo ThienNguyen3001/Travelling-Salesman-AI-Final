@@ -1,6 +1,8 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 import os
+import sys
+sys.path.append(os.path.abspath('./src'))
 from GA import genetic_algorithm
 from TSP import read_matrix
 
@@ -13,7 +15,7 @@ class UI:
         self.parameters_frame.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
 
         # Combobox chọn file dữ liệu
-        self.data_files = [f"data/{file}" for file in os.listdir("data") if file.endswith(".txt")]
+        self.data_files = [f"./data/{file}" for file in os.listdir("data") if file.endswith(".txt")]
         self.data_file_combobox = self.create_combobox(self.parameters_frame, "Data File", self.data_files, 0)
 
         # Kích thước quần thể

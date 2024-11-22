@@ -261,7 +261,7 @@ def genetic_algorithm(n_cities, distances, population_size=100, generations=100,
             best_route = route
             best_distance = route_distance
     best_route = best_route + [best_route[0]]
-
+    best_route = [city + 1 for city in best_route] 
     # Trả về kết quả
     solution = {
         'route': best_route,

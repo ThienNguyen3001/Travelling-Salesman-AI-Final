@@ -18,7 +18,7 @@ def compute_route_distance(route, distances):
     return total_distance
 
 def read_matrix(file_path):
-    with open(file_path, 'r') as file:
+    with open(file_path,'r') as file:
         matrix = []
         for line in file:
             row = list(map(int, line.split()))
