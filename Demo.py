@@ -3,8 +3,8 @@ from tkinter import ttk, messagebox
 import os
 import sys
 sys.path.append(os.path.abspath('./src'))
-from GA import genetic_algorithm
-from TSP import read_matrix
+from src.GA import genetic_algorithm
+from src.TSP import read_matrix
 
 class UI:
     def __init__(self, root):
