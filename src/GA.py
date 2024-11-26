@@ -2,7 +2,6 @@ import random
 import numpy as np
 from TSP import generate_random_route, compute_route_distance
 
-#tournament selection
 def elitism_selection(population, fitness_scores):
     selected_routes = []
     population_size = len(population)
@@ -27,7 +26,6 @@ def tournament_selection(population, fitness_scores, tournament_size=3):
 
     return selected_routes
 
-#voi mutate = 0,5 sẽ cho ra đáp án đến problem3, còn lại thì chỉ gần đúng
 def rank_selection(population, fitness_scores):
     sorted_population = [ind for _, ind in sorted(zip(fitness_scores, population))] #sort with fitness
     ranks = np.arange(1, len(population) + 1) #add rank
@@ -89,7 +87,6 @@ def order_crossover(parent1, parent2):
     
     return child1, child2
 
-#Single-Point crossover
 def single_point_crossover(parent1, parent2):
     crossover_point = random.randint(1, len(parent1) - 1)
     # Tạo child1: lấy phần đầu từ parent1 và phần còn lại từ parent2
@@ -100,13 +97,8 @@ def single_point_crossover(parent1, parent2):
     child2 += [city for city in parent1 if city not in child2]
     return child1, child2
 
-#rank kết hợp với two point có thể giải đến problem4, mutate = 0,05
 def two_point_crossover(parent1, parent2):
-    point1 = random.randint(1, len(parent1) - 1)
-    point2 = random.randint(1, len(parent1) - 1)
-
-    if point1 > point2:
-        point1, point2 = point2, point1
+    point1, point2 = sorted(random.sample(range(1, len(parent1)), 2))
 
     # Crossover for child1
     child1_part1 = parent1[:point1]
@@ -128,7 +120,6 @@ def two_point_crossover(parent1, parent2):
 
     return child1, child2
 
-# Hàm lai ghép sử dụng Uniform crossover
 def uniform_crossover(parent1, parent2):
     child1 = [0] * len(parent1)
     child2 = [0] * len(parent1)
@@ -166,13 +157,13 @@ def crossover(parent1, parent2, algorithm='order'):
 def inversion_mutate(route, mutation_rate):
     
     if random.uniform(0, 1) < mutation_rate:
-        # Chọn hai vị trí ngẫu nhiên
+        
         start, end = sorted(random.sample(range(1, len(route)), 2)) 
         
         route[start:end] = reversed(route[start:end])
     return route
 
-#tổ hợp cua nhut co the giai den problem4 với mutate = 0.05
+
 def scramble_mutate(route, mutation_rate):
     if random.random() < mutation_rate:
         point1 = random.randint(1, len(route) - 2) 
@@ -187,7 +178,6 @@ def scramble_mutate(route, mutation_rate):
     return route
 
 def swap_mutate(route, mutation_rate):
-
     for i in range(1,len(route)):  
         if random.uniform(0, 1) < mutation_rate:
             j = random.randint(1, len(route) - 1)  
