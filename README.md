@@ -11,7 +11,8 @@ pip install numpy
 pip install matplotlib
 pip install tk
 ```
-* Bước 5: 
+* Bước 5:
+  * Trong thư mục ```src``` chứ code thuật toán.
   * Trong thư mục có các file ```Experiment``` có đuôi ```.ipynb``` là các file thí nghiệm của thành viên trong nhóm.
   * File ```Demo.py``` là file chạy giao diện, mở file lên và chạy chương trình.
 
